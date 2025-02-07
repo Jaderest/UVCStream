@@ -30,12 +30,13 @@ public:
 private:
     bool initDXGI();
 
-    ID3D11Device *d3dDevice = nullptr;
-    ID3D11DeviceContext *d3dContext = nullptr;
+    ID3D11Device *d3dDevice = nullptr; // Direct3D 11 设备
+    ID3D11DeviceContext *d3dContext = nullptr; // Direct3D 11 设备上下文
+    // DXGI 输出复制对象，用于捕获屏幕最新帧
     IDXGIOutputDuplication *dxgiOutputDuplication = nullptr;
 
-    int screenWidth {};
-    int screenHeight {};
+    int screenWidth{};
+    int screenHeight{};
 };
 
 

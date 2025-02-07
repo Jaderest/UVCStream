@@ -5,7 +5,7 @@
 #include "ScreenCapturer.hpp"
 #include <iostream>
 
-ScreenCapturer::ScreenCapturer() {}
+ScreenCapturer::ScreenCapturer() = default;
 
 ScreenCapturer::~ScreenCapturer() {
     if (dxgiOutputDuplication) dxgiOutputDuplication->Release();
@@ -23,6 +23,10 @@ bool ScreenCapturer::initDXGI() {
 
     // 创建 D3D11 设备
     D3D_FEATURE_LEVEL featureLevel;
+    // 创建Direct3D 11设备和设备上下文，用于GPU渲染
+    // &d3dDevice: 返回创建的Direct3D 11设备
+    // &featureLevel: 返回创建的设备的特性级别
+    // &d3dContext: 返回创建的设备上下文
     hr = D3D11CreateDevice(
         nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
         D3D11_SDK_VERSION, &d3dDevice, &featureLevel, &d3dContext);
@@ -32,8 +36,9 @@ bool ScreenCapturer::initDXGI() {
     }
 
     // 获取 DXGI 设备
+    // DXGI是D3D11和显示器交互的关键组件
     IDXGIDevice* dxgiDevice = nullptr;
-    hr = d3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+    hr = d3dDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void **>(&dxgiDevice));
     if (FAILED(hr)) {
         std::cerr << "Failed to get DXGI device\n";
         return false;
@@ -41,7 +46,7 @@ bool ScreenCapturer::initDXGI() {
 
     // 获取 DXGI 适配器
     IDXGIAdapter* dxgiAdapter = nullptr;
-    hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgiAdapter);
+    hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void **>(&dxgiAdapter));
     dxgiDevice->Release();
     if (FAILED(hr)) {
         std::cerr << "Failed to get DXGI adapter\n";
@@ -50,6 +55,7 @@ bool ScreenCapturer::initDXGI() {
 
     // 获取 DXGI 输出（显示器）
     IDXGIOutput* dxgiOutput = nullptr;
+    // 获取索引为0的显示器的输出
     hr = dxgiAdapter->EnumOutputs(0, &dxgiOutput);
     dxgiAdapter->Release();
     if (FAILED(hr)) {
@@ -65,7 +71,7 @@ bool ScreenCapturer::initDXGI() {
 
     // 复制 DXGI 输出
     IDXGIOutput1* dxgiOutput1 = nullptr;
-    hr = dxgiOutput->QueryInterface(__uuidof(IDXGIOutput1), (void**)&dxgiOutput1);
+    hr = dxgiOutput->QueryInterface(__uuidof(IDXGIOutput1), reinterpret_cast<void **>(&dxgiOutput1));
     dxgiOutput->Release();
     if (FAILED(hr)) {
         std::cerr << "Failed to get DXGI Output1\n";
@@ -96,10 +102,11 @@ FrameData ScreenCapturer::captureFrame() {
         return frame;
     }
 
-    hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&texture);
+    hr = desktopResource->QueryInterface(__uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&texture));
     desktopResource->Release();
     if (FAILED(hr)) {
         dxgiOutputDuplication->ReleaseFrame();
+        std::cout << "faq" << std::endl;
         return frame;
     }
 

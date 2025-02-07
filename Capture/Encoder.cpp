@@ -18,6 +18,7 @@ bool Encoder::initialize(const std::string& filename, int width, int height) {
         return false;
     }
 
+    // 查找H.264编码器，并创建AVCodecContext
     const AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
     if (!codec) {
         std::cerr << "H.264 codec not found\n";
@@ -27,8 +28,8 @@ bool Encoder::initialize(const std::string& filename, int width, int height) {
     codecCtx = avcodec_alloc_context3(codec);
     codecCtx->width = width;
     codecCtx->height = height;
-    codecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
-    codecCtx->time_base = {1, 30};
+    codecCtx->pix_fmt = AV_PIX_FMT_YUV420P; // YUV420P格式，H.264需要
+    codecCtx->time_base = {1, 30}; // 30 FPS
 
     if (avcodec_open2(codecCtx, codec, nullptr) < 0) {
         std::cerr << "Failed to open codec\n";

@@ -24,11 +24,11 @@ public:
     void finalize();
 
 private:
-    AVFormatContext* formatCtx = nullptr;
-    AVCodecContext* codecCtx = nullptr;
-    AVStream* videoStream = nullptr;
-    SwsContext* swsCtx = nullptr;
-    AVFrame* avFrame = nullptr;
+    AVFormatContext* formatCtx = nullptr; // FFmpeg 格式上下文
+    AVCodecContext* codecCtx = nullptr; // FFmpeg 编解码器上下文，存储H.264编码器的参数
+    AVStream* videoStream = nullptr; // 视频流，管理帧数据
+    SwsContext* swsCtx = nullptr; // 颜色空间转换上下文
+    AVFrame* avFrame = nullptr; // FFmpeg 帧数据，存储YUV数据
 };
 
 

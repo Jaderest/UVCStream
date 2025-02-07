@@ -45,7 +45,7 @@ int main() {
             std::cerr << "Failed to encode frame!" << std::endl;
             break;
         } else {
-            // std::cout << "Frame " << i << " encoded" << std::endl;
+            std::cout << "Frame " << i << " encoded" << std::endl;
         }
 
         // 控制帧率
